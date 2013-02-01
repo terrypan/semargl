@@ -37,8 +37,8 @@ public final class JenaSink extends AbstractJenaSink {
 
     private final int batchSize;
 
-    private Triple[] triples;
-    private int triplesSize;
+    private Statement[] triples;
+    private int statementsSize;
 
     private JenaSink(Model model, int batchSize) {
         super(model);
@@ -54,17 +54,23 @@ public final class JenaSink extends AbstractJenaSink {
     }
 
     private void newBatch() {
-        triples = new Triple[batchSize];
-        triplesSize = 0;
+        statements = new Statement[batchSize];
+        statementsSize = 0;
     }
 
     @Override
     protected void addTriple(Node subj, Node pred, Node obj) {
-        triples[triplesSize++] = new Triple(subj, pred, obj);
-        if (triplesSize == batchSize) {
+        Triple temptriple = new Triple(subj, pred, obj);
+        Statement stmt = model.asStatement(temptriple);
+        statements[statementsSize++] = stmt;
+        
+        if (statementsSize == batchSize) {
             model.enterCriticalSection(Lock.WRITE);
-            model.getGraph().getBulkUpdateHandler().add(triples);
+            try {
+            model.add(statements);
+            } finally {
             model.leaveCriticalSection();
+            }
             newBatch();
         }
     }
@@ -76,14 +82,17 @@ public final class JenaSink extends AbstractJenaSink {
 
     @Override
     public void endStream() throws ParseException {
-        if (triplesSize == 0) {
+        if (statementsSize == 0) {
             return;
         }
-        Triple[] dummy = new Triple[triplesSize];
-        System.arraycopy(triples, 0, dummy, 0, triplesSize);
+        Statement[] dummy = new Statement[statementsSize];
+        System.arraycopy(statements, 0, dummy, 0, statementsSize);
         model.enterCriticalSection(Lock.WRITE);
-        model.getGraph().getBulkUpdateHandler().add(dummy);
+        try {
+        model.add(dummy);
+        } finally {
         model.leaveCriticalSection();
+        }
     }
 
     @Override
