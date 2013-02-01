@@ -24,7 +24,6 @@ import org.semarglproject.ri.RIUtils;
 import org.semarglproject.sink.Pipe;
 import org.semarglproject.sink.SaxSink;
 import org.semarglproject.sink.TripleSink;
-import org.semarglproject.source.StreamProcessor;
 import org.semarglproject.vocab.RDF;
 import org.semarglproject.vocab.RDFa;
 import org.semarglproject.vocab.XSD;
@@ -32,6 +31,7 @@ import org.semarglproject.xml.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
@@ -53,44 +53,14 @@ import java.util.NoSuchElementException;
  *     List of supported options:
  *     <ul>
  *         <li>{@link #RDFA_VERSION_PROPERTY}</li>
- *         <li>{@link StreamProcessor#PROCESSOR_GRAPH_HANDLER_PROPERTY}</li>
+ *         <li>{@link #PROCESSOR_GRAPH_HANDLER_PROPERTY}</li>
  *         <li>{@link #ENABLE_OUTPUT_GRAPH}</li>
  *         <li>{@link #ENABLE_PROCESSOR_GRAPH}</li>
  *         <li>{@link #ENABLE_VOCAB_EXPANSION}</li>
  *     </ul>
  * </p>
  */
-public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, TripleSink, ProcessorGraphHandler {
-
-    /**
-     * Used as a key with {@link #setProperty(String, Object)} method.
-     * RDFa version compatibility. Allowed values are {@link RDFa#VERSION_10} and {@link RDFa#VERSION_11}.
-     */
-    public static final String RDFA_VERSION_PROPERTY =
-            "http://semarglproject.org/rdfa/properties/version";
-
-    /**
-     * Used as a key with {@link #setProperty(String, Object)} method.
-     * Enables or disables generation of triples from output graph.
-     */
-    public static final String ENABLE_OUTPUT_GRAPH =
-            "http://semarglproject.org/rdfa/properties/enable-output-graph";
-
-    /**
-     * Used as a key with {@link #setProperty(String, Object)} method.
-     * Enables or disables generation of triples from processor graph.
-     * ProcessorGraphHandler will receive events regardless of this option.
-     */
-    public static final String ENABLE_PROCESSOR_GRAPH =
-            "http://semarglproject.org/rdfa/properties/enable-processor-graph";
-
-    /**
-     * Used as a key with {@link #setProperty(String, Object)} method.
-     * Enables or disables <a href="http://www.w3.org/TR/2012/REC-rdfa-core-20120607/#s_vocab_expansion">vocabulary
-     * expansion</a> feature.
-     */
-    public static final String ENABLE_VOCAB_EXPANSION =
-            "http://semarglproject.org/rdfa/properties/enable-vocab-expansion";
+public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, TripleSink, ProcessorGraphHandler, IParser {
 
     static final String AUTODETECT_DATE_DATATYPE = "AUTODETECT_DATE_DATATYPE";
 
@@ -145,7 +115,6 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
     private final DocumentContext dh;
     private final Splitter splitter;
     private Locator locator = null;
-
     private ProcessorGraphHandler processorGraphHandler = null;
 
     private boolean rdfXmlInline = false;
@@ -174,6 +143,7 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
 
     @Override
     public void startDocument() {
+
         EvalContext initialContext = EvalContext.createInitialContext(dh);
         initialContext.iriMappings.put("", XHTML_VOCAB);
         contextStack.push(initialContext);
@@ -194,6 +164,15 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
 
     @Override
     public void startElement(String nsUri, String localName, String qName, Attributes attrs) throws SAXException {
+        
+	String xpath = attrs.getValue("xpath");
+        if (xpath != null){
+            AttributesImpl attrImpl = new AttributesImpl(attrs);
+            int xpathIndex = attrImpl.getIndex("xpath");
+            attrImpl.removeAttribute(xpathIndex);
+            attrs = attrImpl;
+        }
+        
         if (rdfXmlInline) {
             rdfXmlParser.startElement(nsUri, localName, qName, attrs);
             return;
@@ -1029,10 +1008,8 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
                 throw new IllegalArgumentException("Unsupported RDFa version");
             }
             defaultRdfaVersion = (short) rdfaVersion;
-        } else if (StreamProcessor.PROCESSOR_GRAPH_HANDLER_PROPERTY.equals(key)
-                && value instanceof ProcessorGraphHandler) {
+        } else if (PROCESSOR_GRAPH_HANDLER_PROPERTY.equals(key) && value instanceof ProcessorGraphHandler) {
             processorGraphHandler = (ProcessorGraphHandler) value;
-            return false;
         } else {
             return false;
         }
@@ -1051,7 +1028,7 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
      * @param vocabUrl URL to load from
      * @return loaded vocabulary (can be cached)
      */
-    Vocabulary loadVocabulary(String vocabUrl) {
+    public Vocabulary loadVocabulary(String vocabUrl) {
         if (sinkOutputGraph) {
             sink.addNonLiteral(dh.base, RDFa.USES_VOCABULARY, vocabUrl);
         }
@@ -1247,6 +1224,26 @@ public final class RdfaParser extends Pipe<TripleSink> implements SaxSink, Tripl
         public void remove() {
             throw new UnsupportedOperationException();
         }
+    }
+
+    @Override
+    public void addNonLiteral(String subj, String pred, String obj, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addPlainLiteral(String subj, String pred, String content,
+            String lang, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addTypedLiteral(String subj, String pred, String content,
+            String type, String xpath) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

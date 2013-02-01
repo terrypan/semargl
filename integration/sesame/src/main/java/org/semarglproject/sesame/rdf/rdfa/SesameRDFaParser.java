@@ -30,7 +30,6 @@ import org.semarglproject.rdf.ProcessorGraphHandler;
 import org.semarglproject.rdf.rdfa.RdfaParser;
 import org.semarglproject.sesame.core.sink.SesameSink;
 import org.semarglproject.vocab.RDFa;
-import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,16 +69,7 @@ public final class SesameRDFaParser implements RDFParser, ProcessorGraphHandler 
         streamProcessor = new StreamProcessor(RdfaParser.connect(SesameSink.connect(null)));
         streamProcessor.setProperty(RdfaParser.ENABLE_PROCESSOR_GRAPH, processorGraphEnabled);
         streamProcessor.setProperty(RdfaParser.ENABLE_VOCAB_EXPANSION, vocabExpansionEnabled);
-        streamProcessor.setProperty(StreamProcessor.PROCESSOR_GRAPH_HANDLER_PROPERTY, this);
-    }
-
-    /**
-     * Constructor which allows to specify custom XMLReader.
-     * @param xmlReader instance of XMLReader to be used in processing
-     */
-    public SesameRDFaParser(XMLReader xmlReader) {
-        this();
-        streamProcessor.setProperty(StreamProcessor.XML_READER_PROPERTY, xmlReader);
+        streamProcessor.setProperty(RdfaParser.PROCESSOR_GRAPH_HANDLER_PROPERTY, this);
     }
 
     @Override
@@ -143,7 +133,7 @@ public final class SesameRDFaParser implements RDFParser, ProcessorGraphHandler 
 
     @Override
     public RdfaParserConfig getParserConfig() {
-        return new RdfaParserConfig(false, false, preserveBNodeIDs, DatatypeHandling.IGNORE,
+        return new RdfaParserConfig(false, true, preserveBNodeIDs, DatatypeHandling.IGNORE,
                 processorGraphEnabled, vocabExpansionEnabled, rdfaCompatibility);
     }
 
@@ -159,7 +149,9 @@ public final class SesameRDFaParser implements RDFParser, ProcessorGraphHandler 
 
     @Override
     public void setStopAtFirstError(boolean stopAtFirstError) {
-        // RDFa parser ignores all errors when possible by default
+        if (!stopAtFirstError) {
+            throw new IllegalArgumentException("Parser doesn't support stopAtFirstError = " + stopAtFirstError);
+        }
     }
 
     @Override

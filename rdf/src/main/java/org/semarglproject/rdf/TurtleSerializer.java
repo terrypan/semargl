@@ -256,4 +256,24 @@ public final class TurtleSerializer extends Pipe<CharSink> implements TripleSink
         }
     }
 
+    @Override
+    public void addNonLiteral(String subj, String pred, String obj, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addPlainLiteral(String subj, String pred, String content,
+            String lang, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addTypedLiteral(String subj, String pred, String content,
+            String type, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -81,6 +81,28 @@ public abstract class AbstractJenaSink implements TripleSink {
     }
 
     @Override
+    public final void addNonLiteral(String subj, String pred, String obj, String xpath) {
+        
+        addTriple(convertNonLiteral(subj), Node.createURI(pred), convertNonLiteral(obj), xpath);
+    }
+
+    @Override
+    public final void addPlainLiteral(String subj, String pred, String content, String lang, String xpath) {
+        if (lang == null) {
+            addTriple(convertNonLiteral(subj), Node.createURI(pred), Node.createLiteral(content), xpath);
+        } else {
+            addTriple(convertNonLiteral(subj), Node.createURI(pred),
+                    Node.createLiteral(content, lang, false), xpath);
+        }
+    }
+
+    @Override
+    public final void addTypedLiteral(String subj, String pred, String content, String type, String xpath) {
+        Node literal = Node.createLiteral(content, "", new BaseDatatype(type));
+        addTriple(convertNonLiteral(subj), Node.createURI(pred), literal, xpath);
+    }
+    
+    @Override
     public boolean setProperty(String key, Object value) {
         if (OUTPUT_MODEL_PROPERTY.equals(key) && value instanceof Model) {
             model = (Model) value;
@@ -96,4 +118,13 @@ public abstract class AbstractJenaSink implements TripleSink {
      * @param obj triple's object
      */
     protected abstract void addTriple(Node subj, Node pred, Node obj);
+    
+    /**
+     * Callback method for handling Jena triples.
+     * @param subj triple's subject
+     * @param pred triple's predicate
+     * @param obj triple's object
+     * @param xpath triple's xpath in document
+     */
+    protected abstract void addTriple(Node subj, Node pred, Node obj, String xpath);
 }

@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import org.semarglproject.jena.core.sink.JenaSink;
 import org.semarglproject.source.StreamProcessor;
 import org.semarglproject.rdf.ParseException;
+import org.semarglproject.rdf.rdfa.IParser;
 import org.semarglproject.rdf.rdfa.RdfaParser;
 import org.semarglproject.rdf.rdfa.RdfaTestBundle;
 import org.semarglproject.rdf.rdfa.RdfaTestBundle.TestCase;
@@ -44,7 +45,7 @@ public final class RdfaParserTest {
     private SaveToFileCallback jenaCallback = new SaveToFileCallback() {
         @Override
         public void run(Reader input, String inputUri, Writer output, short rdfaVersion) throws ParseException {
-            streamProcessor.setProperty(RdfaParser.RDFA_VERSION_PROPERTY, rdfaVersion);
+            streamProcessor.setProperty(IParser.RDFA_VERSION_PROPERTY, rdfaVersion);
             try {
                 streamProcessor.process(input, inputUri);
             } finally {
@@ -59,7 +60,7 @@ public final class RdfaParserTest {
         model = ModelFactory.createDefaultModel();
 
         streamProcessor = new StreamProcessor(RdfaParser.connect(JenaSink.connect(model)));
-        streamProcessor.setProperty(RdfaParser.ENABLE_VOCAB_EXPANSION, true);
+        streamProcessor.setProperty(IParser.ENABLE_VOCAB_EXPANSION, true);
     }
 
     @BeforeMethod

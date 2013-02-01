@@ -40,7 +40,7 @@ final class DocumentContext {
     short documentFormat;
     short rdfaVersion;
 
-    final RdfaParser parser;
+    final IParser parser;
 
     String base;
     String originUri;
@@ -48,8 +48,8 @@ final class DocumentContext {
     private Map<String, String> bnodeMapping = new HashMap<String, String>();
     private int nextBnodeId;
 
-    DocumentContext(RdfaParser parser) {
-        this.parser = parser;
+    DocumentContext(IParser parser) {
+        this.parser =  parser;
         nextBnodeId = 0;
         clear(RDFa.VERSION_11);
     }

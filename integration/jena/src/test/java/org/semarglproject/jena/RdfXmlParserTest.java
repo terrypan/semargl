@@ -15,25 +15,26 @@
  */
 package org.semarglproject.jena;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import static org.semarglproject.rdf.RdfXmlTestBundle.runTestWith;
+
+import java.io.Reader;
+import java.io.Writer;
+
 import org.semarglproject.jena.core.sink.JenaSink;
-import org.semarglproject.source.StreamProcessor;
 import org.semarglproject.rdf.ParseException;
 import org.semarglproject.rdf.RdfXmlParser;
 import org.semarglproject.rdf.RdfXmlTestBundle;
+import org.semarglproject.rdf.RdfXmlTestBundle.SaveToFileCallback;
 import org.semarglproject.rdf.RdfXmlTestBundle.TestCase;
+import org.semarglproject.source.StreamProcessor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
 
-import java.io.Reader;
-import java.io.Writer;
-
-import static org.semarglproject.rdf.RdfXmlTestBundle.SaveToFileCallback;
-import static org.semarglproject.rdf.RdfXmlTestBundle.runTestWith;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public final class RdfXmlParserTest {
 

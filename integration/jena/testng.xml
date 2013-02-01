@@ -21,7 +21,9 @@
             <class name="org.semarglproject.jena.RdfXmlParserTest" />
             <class name="org.semarglproject.jena.NTriplesParserTest" />
             <class name="org.semarglproject.jena.RdfaParserTest" />
+            <!--<class name="org.semarglproject.jena.RdfaXPathParserTest" />-->
             <class name="org.semarglproject.jena.JenaRdfaReaderTest" />
+            <!--<class name="org.semarglproject.jena.JenaRdfaXPathReaderTest" />-->  
         </classes>
     </test>
 </suite>

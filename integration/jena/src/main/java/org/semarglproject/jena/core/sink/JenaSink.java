@@ -15,12 +15,12 @@
  */
 package org.semarglproject.jena.core.sink;
 
+import org.semarglproject.rdf.ParseException;
+import org.semarglproject.sink.TripleSink;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
-import org.semarglproject.rdf.ParseException;
-import org.semarglproject.sink.TripleSink;
 
 /**
  * Implementation if {@link TripleSink} which feeds triples from Semargl's pipeline to Jena's {@link Model}.
@@ -63,8 +63,11 @@ public final class JenaSink extends AbstractJenaSink {
         triples[triplesSize++] = new Triple(subj, pred, obj);
         if (triplesSize == batchSize) {
             model.enterCriticalSection(Lock.WRITE);
+            try {
             model.getGraph().getBulkUpdateHandler().add(triples);
+            } finally {
             model.leaveCriticalSection();
+            }
             newBatch();
         }
     }
@@ -82,11 +85,23 @@ public final class JenaSink extends AbstractJenaSink {
         Triple[] dummy = new Triple[triplesSize];
         System.arraycopy(triples, 0, dummy, 0, triplesSize);
         model.enterCriticalSection(Lock.WRITE);
+        try {
         model.getGraph().getBulkUpdateHandler().add(dummy);
-        model.leaveCriticalSection();
+        } finally {
+            model.leaveCriticalSection();
+        }
+       
     }
 
     @Override
     public void setBaseUri(String baseUri) {
     }
+    
+    @Override
+    protected void addTriple(Node subj, Node pred, Node obj, String xpath) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    
 }

@@ -46,6 +46,7 @@ public final class JenaRdfaReader implements RDFReader {
         streamProcessor = new StreamProcessor(RdfaParser.connect(JenaSink.connect(null)));
     }
 
+    
     /**
      * Injects information about Semargl RDFa parser to Jena framework.
      */
@@ -68,7 +69,7 @@ public final class JenaRdfaReader implements RDFReader {
         InputStreamReader reader = new InputStreamReader(r);
         try {
             model.begin();
-            read(model, reader, base);
+        read(model, reader, base);
         } finally {
             model.abort();
             try {

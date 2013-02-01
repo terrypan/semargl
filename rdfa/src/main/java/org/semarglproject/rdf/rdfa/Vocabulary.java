@@ -68,7 +68,7 @@ final class Vocabulary {
         }
 
         StreamProcessor rdfaSp = new StreamProcessor(RdfaParser.connect(vocabParser));
-        rdfaSp.setProperty(RdfaParser.ENABLE_VOCAB_EXPANSION, false);
+        rdfaSp.setProperty(IParser.ENABLE_VOCAB_EXPANSION, false);
         parseVocabWithDp(vocabUrl, rdfaSp);
 
         if (!terms.isEmpty() || !expansions.isEmpty()) {
@@ -77,7 +77,7 @@ final class Vocabulary {
 
         // TODO: add format detection
         StreamProcessor rdfXmlSp = new StreamProcessor(RdfXmlParser.connect(vocabParser));
-        rdfaSp.setProperty(RdfaParser.ENABLE_VOCAB_EXPANSION, false);
+        rdfaSp.setProperty(IParser.ENABLE_VOCAB_EXPANSION, false);
         parseVocabWithDp(vocabUrl, rdfXmlSp);
 
         if (terms.isEmpty() && expansions.isEmpty()) {
@@ -166,6 +166,27 @@ final class Vocabulary {
         @Override
         public boolean setProperty(String key, Object value) {
             return false;
+        }
+
+        @Override
+        public void addNonLiteral(String subj, String pred, String obj,
+                String xpath) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void addPlainLiteral(String subj, String pred, String content,
+                String lang, String xpath) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void addTypedLiteral(String subj, String pred, String content,
+                String type, String xpath) {
+            // TODO Auto-generated method stub
+            
         }
     }
 }

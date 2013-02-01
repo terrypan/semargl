@@ -147,8 +147,8 @@ public final class RdfaTestBundle {
                 int testNum = Integer.parseInt(caseName.substring(caseName.lastIndexOf("/") + 1));
                 // there is no way to detect rdfa version from that document
                 if (testNum == 294 && rdfaVersion.equals("rdfa1.0") && docFormat.equals("svg")
-                        // RDFa Property Copying feature is not stabilized yet
-                        || testNum >= 321 && testNum <= 324) {
+                 // RDFa Property Copying feature is not stabilized yet
+                    || testNum >= 321 && testNum <= 327) {
                     continue;
                 }
             } catch (NumberFormatException e) {

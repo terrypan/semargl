@@ -18,27 +18,14 @@ package org.semarglproject.rdf;
 import org.semarglproject.sink.CharSink;
 import org.semarglproject.sink.Pipe;
 import org.semarglproject.sink.TripleSink;
-import org.semarglproject.source.StreamProcessor;
 import org.semarglproject.xml.XmlUtils;
 
 import java.util.BitSet;
 
 /**
  * Implementation of streaming <a href="http://www.w3.org/2001/sw/RDFCore/ntriples/">NTriples</a> parser.
- * <p>
- *     List of supported options:
- *     <ul>
- *         <li>{@link StreamProcessor#PROCESSOR_GRAPH_HANDLER_PROPERTY}</li>
- *         <li>{@link StreamProcessor#ENABLE_ERROR_RECOVERY}</li>
- *     </ul>
- * </p>
  */
 public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
-
-    /**
-     * Class URI for errors produced by a parser
-     */
-    public static final String ERROR = "http://semarglproject.org/ntriples/Error";
 
     private static final short MODE_SAVE_UNTIL = 1;
     private static final short MODE_SAVE_WHILE = 2;
@@ -49,9 +36,6 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
     private String buffer = null;
     private int pos = -1;
     private int limit = -1;
-
-    private ProcessorGraphHandler processorGraphHandler = null;
-    private boolean ignoreErrors = false;
 
     private NTriplesParser(TripleSink sink) {
         super(sink);
@@ -66,13 +50,8 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
         return new NTriplesParser(sink);
     }
 
-    private void error(String msg) throws ParseException {
-        if (processorGraphHandler != null) {
-            processorGraphHandler.error(ERROR, msg);
-        }
-        if (!ignoreErrors) {
-            throw new ParseException(msg);
-        }
+    private static void error(String msg) throws ParseException {
+        throw new ParseException(msg);
     }
 
     private static boolean isEntirelyWhitespaceOrEmpty(String s) {
@@ -127,7 +106,6 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
                     }
                     if (subj == null || pred == null) {
                         error("Literal before subject or predicate");
-                        return;
                     }
                     parseLiteral(subj, pred, value);
                     nextLine = true;
@@ -136,7 +114,6 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
                     return;
                 default:
                     error("Unknown token '" + line.charAt(pos) + "' in line '" + line + "'");
-                    return;
             }
         }
         skipWhitespace();
@@ -209,7 +186,7 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
         return buffer.substring(startPos, startPos + savedLength);
     }
 
-    private String unescape(String str) throws ParseException {
+    private static String unescape(String str) throws ParseException {
         int limit = str.length();
         StringBuilder result = new StringBuilder(limit);
 
@@ -272,11 +249,6 @@ public final class NTriplesParser extends Pipe<TripleSink> implements CharSink {
 
     @Override
     protected boolean setPropertyInternal(String key, Object value) {
-        if (StreamProcessor.PROCESSOR_GRAPH_HANDLER_PROPERTY.equals(key) && value instanceof ProcessorGraphHandler) {
-            processorGraphHandler = (ProcessorGraphHandler) value;
-        } else if (StreamProcessor.ENABLE_ERROR_RECOVERY.equals(key) && value instanceof Boolean) {
-            ignoreErrors = (Boolean) value;
-        }
         return false;
     }
 }
