@@ -4,11 +4,11 @@
 
     <parent>
         <groupId>org.semarglproject</groupId>
-        <artifactId>semargl-parent-tso</artifactId>
+        <artifactId>semargl-xpath-parent</artifactId>
         <version>0.4</version>
     </parent>
 
-    <artifactId>semargl-rdf-tso</artifactId>
+    <artifactId>semargl-xpath-rdf</artifactId>
     <packaging>jar</packaging>
 
     <name>Semargl: RDF</name>
@@ -51,7 +51,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-core-tso</artifactId>
+            <artifactId>semargl-xpath-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

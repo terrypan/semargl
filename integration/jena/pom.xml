@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>org.semarglproject</groupId>
-        <artifactId>semargl-integration-tso</artifactId>
+        <artifactId>semargl-xpath-integration</artifactId>
         <version>0.4</version>
     </parent>
 
-    <artifactId>semargl-jena-tso</artifactId>
+    <artifactId>semargl-xpath-jena</artifactId>
     <packaging>jar</packaging>
 
     <name>Semargl: Jena Integration</name>
@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-core-tso</artifactId>
+            <artifactId>semargl-xpath-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -42,27 +42,27 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-rdfa-tso</artifactId>
+            <artifactId>semargl-xpath-rdfa</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <!--Testing-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-rdfa-tso</artifactId>
+            <artifactId>semargl-xpath-rdfa</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-rdf-tso</artifactId>
+            <artifactId>semargl-xpath-rdf</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>semargl-rdf-tso</artifactId>
+            <artifactId>semargl-xpath-rdf</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

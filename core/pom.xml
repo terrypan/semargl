@@ -5,11 +5,11 @@
 
     <parent>
         <groupId>org.semarglproject</groupId>
-        <artifactId>semargl-parent-tso</artifactId>
+        <artifactId>semargl-xpath-parent</artifactId>
         <version>0.4</version>
     </parent>
 
-    <artifactId>semargl-core-tso</artifactId>
+    <artifactId>semargl-xpath-core</artifactId>
     <packaging>jar</packaging>
 
     <name>Semargl: Core</name>
